@@ -147,14 +147,16 @@ This process has been tested on a MacBook Pro 2021 (using M1) and a MacBook Air 
 </details>
 
 
-### Linux Installation (Updated Instructions)
+### Linux Installation
 
 <details id="LinuxInstall">
   <summary>See Linux Installation Instructions</summary>
 
 <br />
 
-**These installation instructions are for Debian & Arch-based Linux systems.**
+**These installation instructions are for Debian, Arch & Fedora-based Linux systems.**
+
+**Requirements:** Python 3.10 or newer. UVR is tested against Python 3.14.
 
 ---
 
@@ -164,19 +166,25 @@ This process has been tested on a MacBook Pro 2021 (using M1) and a MacBook Air 
 
 ---
 
-#### **Step 2: Install Dependencies**
-Use the following commands based on your system type:
+#### **Step 2: Install System Dependencies**
+
+Two things are needed: FFmpeg, and the CPython development headers. The headers are required because `diffq` and `samplerate` are C extensions that must be compiled during install; without them the install fails with `fatal error: Python.h: No such file or directory`.
 
 **For Debian-based systems (Ubuntu, Mint, etc.):**
 ```bash
 sudo apt update && sudo apt upgrade
-sudo apt-get install -y ffmpeg python3-pip python3-tk
+sudo apt-get install -y ffmpeg python3-pip python3-tk python3-dev build-essential
 ```
 
 **For Arch-based systems (EndeavourOS):**
 ```bash
 sudo pacman -Syu
-sudo pacman -S ffmpeg python-pip tk
+sudo pacman -S ffmpeg python-pip tk base-devel
+```
+
+**For Fedora / RHEL-based systems:**
+```bash
+sudo dnf install -y ffmpeg python3-pip python3-tkinter python3-devel gcc gcc-c++
 ```
 
 ---
@@ -195,13 +203,25 @@ Setting up a virtual environment (venv) ensures that the program's dependencies 
    ```
 
 3. **Activate the virtual environment:**
-   - For **Debian-based and Arch-based systems:**
+   - For **Debian-based, Arch-based and Fedora-based systems:**
      ```bash
      source venv/bin/activate
      ```
 
-4. **Install dependencies in the virtual environment:**
+4. **Install the dependencies:**
    ```bash
+   ./install_packages.sh
+   ```
+   This installs PyTorch from the **CPU-only** wheel index, which is what you want on a machine without an NVIDIA GPU — it avoids pulling the multi-gigabyte CUDA dependency stack that the default PyPI `torch` package brings in.
+
+   **If you do have a compatible NVIDIA GPU** and want CUDA acceleration, install PyTorch from the CUDA index instead:
+   ```bash
+   GPU=1 ./install_packages.sh
+   ```
+
+   The script also installs everything else listed in `requirements.txt`. If you would rather do it by hand, run the two commands below **in this order** — installing from `requirements.txt` first will pull the default CUDA build of `torch`:
+   ```bash
+   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
    pip install -r requirements.txt
    ```
 

@@ -1,42 +1,64 @@
-altgraph==0.17.3
-audioread==3.0.0
-certifi==2022.12.07
-cffi==1.15.1
-cryptography==3.4.6
-einops==0.6.0
-future==0.18.3
-julius==0.2.7
-kthread==0.2.3
-librosa==0.9.2
-llvmlite
-matchering==2.0.6
-ml_collections==0.1.1
-natsort==8.2.0
-omegaconf==2.2.3
-opencv-python==4.6.0.66
-Pillow==9.3.0
-psutil==5.9.4
+# Ultimate Vocal Remover v5 - Python 3.14 requirements
+#
+# The original 2023 pins (numpy==1.23.5, scipy==1.9.3, librosa==0.9.2,
+# Pillow==9.3.0, ...) have no cp314 wheels and cannot be built from source on
+# Python 3.14. These are the versions this project is tested against.
+#
+# Install with:
+#   ./install_packages.sh          (CPU, recommended)
+#   GPU=1 ./install_packages.sh    (NVIDIA CUDA wheels)
+#
+# NOTE: building diffq / samplerate needs the CPython headers:
+#   sudo dnf install python3-devel      # Fedora / RHEL
+
+# --- core numerics / audio ---
+numpy==2.5.2
+scipy==1.18.1
+librosa==1.0.0
+soundfile==0.14.0
+audioread==3.1.0
 pydub==0.25.1
-pyglet==1.5.23
-pyperclip==1.8.2
-pyrubberband==0.3.0
-pytorch_lightning==2.0.0
-PyYAML==6.0
-resampy==0.4.2
-scipy==1.9.3
-soundstretch==1.2
+samplerate==0.2.4
+
+# --- deep learning ---
 torch
-urllib3==1.26.12
+torchvision
+onnx==1.23.0
+onnxruntime==1.30.0
+onnx2pytorch==0.6.0
+pytorch_lightning==2.6.6
+einops==0.8.2
+julius==0.2.8
+diffq==0.2.4
+
+# --- config / misc ---
+omegaconf==2.3.1
+ml_collections==1.1.0
+natsort==8.4.0
+PyYAML==6.0.3
 wget==3.2
-samplerate==0.1.0
+six==1.17.0
+cryptography==50.0.1
+tqdm==4.70.1
+
+# --- GUI ---
+Pillow==12.3.0
+pyglet==2.1.16
+pyperclip==1.11.0
+playsound==1.2.2
+psutil==7.2.2
 screeninfo==0.8.1
-diffq
-playsound
-onnx
-onnxruntime
-onnxruntime-gpu
-onnx2pytorch
-SoundFile==0.11.0; sys_platform != 'darwin'
-PySoundFile==0.9.0.post1; sys_platform == 'darwin'
-Dora==0.0.3
-numpy==1.23.5
+kthread==0.2.3
+
+# --- audio post-processing ---
+matchering==2.0.6
+pyrubberband==0.4.0
+resampy==0.4.3
+
+# --- omitted on purpose ---
+# onnxruntime-gpu : swap in for onnxruntime if you have an NVIDIA GPU.
+# xformers        : no cp314 wheels; only referenced inside unused sparse-
+#                    attention helpers in demucs/transformer.py.
+# opencv-python   : not imported anywhere in this project.
+# altgraph, future, soundstretch, Dora, llvmlite
+#                  : not imported by the app (llvmlite arrives via numba).

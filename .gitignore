@@ -1,0 +1,11 @@
+# Virtual environment created for Python 3.14
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Runtime state written by the app on startup
+data.pkl
+gui_data/cr_text.txt

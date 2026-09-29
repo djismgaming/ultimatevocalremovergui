@@ -25,7 +25,13 @@ Tk window and all its descendants.
 
 
 import tkinter
-from tkinter import tix
+
+try:
+    from tkinter import tix
+except ImportError:
+    # The tix extension was deprecated and removed in Python 3.13.
+    # Only the optional TixTk window class below needs it; Tk() is unaffected.
+    tix = None
 
 TkdndVersion = None
 ARM = 'arm'
@@ -286,9 +292,10 @@ class Tk(tkinter.Tk, DnDWrapper):
         tkinter.Tk.__init__(self, *args, **kw)
         self.TkdndVersion = _require(self)
 
-class TixTk(tix.Tk, DnDWrapper):
-    '''Creates a new instance of a tix.Tk() window; all methods of the
-    DnDWrapper class apply to this window and all its descendants.'''
-    def __init__(self, *args, **kw):
-        tix.Tk.__init__(self, *args, **kw)
-        self.TkdndVersion = _require(self)
+if tix is not None:
+    class TixTk(tix.Tk, DnDWrapper):
+        '''Creates a new instance of a tix.Tk() window; all methods of the
+        DnDWrapper class apply to this window and all its descendants.'''
+        def __init__(self, *args, **kw):
+            tix.Tk.__init__(self, *args, **kw)
+            self.TkdndVersion = _require(self)
