@@ -2,7 +2,9 @@
 
 # A stunning dark theme for ttk based on Microsoft's Sun Valley visual style 
 
-package require Tk 8.6
+# Tk 9 rejects an explicit "package require Tk 8.6" pin, so request the
+# Tk package without a version. This keeps the theme working on both 8.6 and 9.x.
+package require Tk
 
 namespace eval ttk::theme::sun-valley-dark {
     variable version 1.0
